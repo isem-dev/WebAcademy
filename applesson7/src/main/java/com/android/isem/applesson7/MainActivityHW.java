@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,8 @@ import android.widget.SimpleCursorAdapter;
 import java.util.ArrayList;
 
 public class MainActivityHW extends AppCompatActivity {
+
+    private final String LOG_TAG = MainActivityHW.class.getSimpleName();
 
     public static final String EXTRA_STUDENT = "com.android.isem.applesson7.STUDENT";
     public static final int REQUEST_CODE_EDIT = 5;
@@ -39,10 +42,10 @@ public class MainActivityHW extends AppCompatActivity {
 
         mAdapter = new SimpleCursorAdapter(
                 this,
-                R.layout.activity_main_hw,
+                android.R.layout.simple_list_item_2,
                 mStudentsCursor,
-                new String[]{Student.COLUMN_FIRST_NAME, Student.COLUMN_LAST_NAME, Student.COLUMN_AGE, Student.COLUMN_PHOTO_ID},
-                new int[]{R.id.textViewFirstName, R.id.textViewLastName, R.id.textViewAge, R.id.imageViewPhoto}
+                new String[]{Student.COLUMN_FIRST_NAME, Student.COLUMN_LAST_NAME},
+                new int[]{android.R.id.text1, android.R.id.text2}
         );
 
         ListView listView = (ListView) findViewById(R.id.listViewHW7);
@@ -99,9 +102,38 @@ public class MainActivityHW extends AppCompatActivity {
 
             mDataBaseHelprer.insertStudent(student);
 
+            insertChecker();
+
             mAdapter.notifyDataSetChanged();
 
             //TODO new cursor init
+        }
+    }
+
+    private void insertChecker() {
+        Cursor cursor = null;
+        try {
+            cursor = mDatabase.query(Student.TABLE_NAME, null, null, null, null, null, null);
+
+            if (cursor.moveToFirst()) { //if table has any record return true
+                while(!cursor.isAfterLast()) {
+
+                    Log.d("Students.db: ",
+                            cursor.getString(cursor.getColumnIndex(Student.COLUMN_FIRST_NAME))
+                                    + " " + cursor.getString(cursor.getColumnIndex(Student.COLUMN_LAST_NAME))
+                                    + " " + cursor.getString(cursor.getColumnIndex(Student.COLUMN_FIRST_NAME))
+
+                    );
+
+                    cursor.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 }

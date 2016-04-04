@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">App Lesson 3: HW 3-4</string>
+    <string name="about_label">About Programm</string>
+    <string name="about_text">This Android app was developed by student for student :)</string>
+    <string name="edit_label">Edit Student</string>
+    <string name="view_label">View Student</string>
+    <string name="edit_photo_label">Edit Photo</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">App Lesson 8</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="pref1_key">pref1_key</string>
+    <string name="pref2_key">pref2_key</string>
+    <string name="pref3_key">pref3_key</string>
+</resources>

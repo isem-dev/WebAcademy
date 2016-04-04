@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="@string/pref1_key"
+        android:title="Preference 1"
+        android:defaultValue="false"
+        android:summaryOn="Enabled"
+        android:summaryOff="Not Enabled"/>
+
+    <PreferenceCategory android:title="Category" />
+
+    <EditTextPreference
+        android:key="@string/pref2_key"
+        android:summary="Preference summary 2"
+        android:title="Preference 2"
+        android:defaultValue="Default text"/>
+
+    <EditTextPreference
+        android:key="@string/pref3_key"
+        android:numeric="integer"
+        android:summary="Preference summary 3 (integer)"
+        android:title="Preference 3"
+        android:defaultValue="123"/>
+</PreferenceScreen>

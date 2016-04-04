@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">App Lesson 7</string>
+    <string name="add_new_student">New student</string>
+    <string name="add_new_group">New group</string>
+    <string name="edit_student">Edit</string>
+    <string name="delete_student">Delete</string>
+</resources>

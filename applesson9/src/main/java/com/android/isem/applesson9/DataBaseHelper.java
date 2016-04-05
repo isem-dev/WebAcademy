@@ -1,4 +1,4 @@
-package com.android.isem.applesson7;
+package com.android.isem.applesson9;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -75,7 +75,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             Log.e(LOG_TAG, e.getMessage(), e);
         }
 
-        return id;
+        return id; //Record id
     }
 
     public long editStudent(Student student) {

@@ -18,31 +18,31 @@ public class ActivityEditStudent extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_edit_item);
 
         Intent intent = getIntent();
         if (intent != null) {
             mStudent = intent.getParcelableExtra(MainActivityHW.EXTRA_STUDENT);
         }
 
-        mImageViewPhoto = (ImageView) findViewById(R.id.imageViewEdit);
+        mImageViewPhoto = (ImageView) findViewById(R.id.imageViewEdit7);
         if (mImageViewPhoto != null) {
             mImageViewPhoto.setImageResource((int) mStudent.getPhotoID());
         }
 
 //        registerForContextMenu(mImageViewPhoto);
 
-        mEditTextFirstName = (EditText) findViewById(R.id.editTextFirstName);
+        mEditTextFirstName = (EditText) findViewById(R.id.editTextFirstName7);
         if (mEditTextFirstName != null) {
             mEditTextFirstName.setText(mStudent.getFirstName());
         }
 
-        mEditTextLastName = (EditText) findViewById(R.id.editTextLastName);
+        mEditTextLastName = (EditText) findViewById(R.id.editTextLastName7);
         if (mEditTextLastName != null) {
             mEditTextLastName.setText(mStudent.getLastName());
         }
 
-        mEditTextAge = (EditText) findViewById(R.id.editTextAge);
+        mEditTextAge = (EditText) findViewById(R.id.editTextAge7);
         if (mEditTextAge != null) {
             mEditTextAge.setText(String.valueOf(mStudent.getAge()));
         }

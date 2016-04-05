@@ -12,6 +12,7 @@ public class Student implements Parcelable {
     public static final String COLUMN_LAST_NAME = "LastName";
     public static final String COLUMN_AGE = "Age";
     public static final String COLUMN_PHOTO_ID = "PhotoId";
+
     public static final String COLUMN_BIRTHDAY = "Birthday";
 
     private long id;
@@ -25,6 +26,10 @@ public class Student implements Parcelable {
         this.lastName = lastName;
         this.age = age;
         this.photoID = photoID;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getFirstName() {

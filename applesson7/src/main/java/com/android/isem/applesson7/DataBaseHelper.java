@@ -59,7 +59,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
 
     public long insertStudent(Student student) {
-        long id = 0;
+        long updCount = 0;
         SQLiteDatabase database = getWritableDatabase();
 
         try {
@@ -69,12 +69,34 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             contentValues.put(Student.COLUMN_AGE, student.getAge());
             contentValues.put(Student.COLUMN_PHOTO_ID, student.getPhotoID());
 
-            id = database.insert("Students", null, contentValues);
+            updCount = database.insert(Student.TABLE_NAME, null, contentValues);
 
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage(), e);
         }
 
-        return id;
+        return updCount;
+    }
+
+    public long editStudent(Student student) {
+        long updCount = 0;
+        SQLiteDatabase database = getWritableDatabase();
+
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(Student.COLUMN_FIRST_NAME, student.getFirstName());
+            contentValues.put(Student.COLUMN_LAST_NAME, student.getLastName());
+            contentValues.put(Student.COLUMN_AGE, student.getAge());
+            contentValues.put(Student.COLUMN_PHOTO_ID, student.getPhotoID());
+
+            updCount = database.update(Student.TABLE_NAME,
+                    contentValues, Student.COLUMN_ID,
+                    new String[] { String.valueOf(student.getId()) });
+
+        } catch (Exception e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+        }
+
+        return updCount;
     }
 }

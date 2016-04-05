@@ -10,49 +10,38 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-
-import java.util.ArrayList;
 
 public class MainActivityHW extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivityHW.class.getSimpleName();
 
     public static final String EXTRA_STUDENT = "com.android.isem.applesson7.STUDENT";
+    public static final int REQUEST_CODE_NEW = 4;
     public static final int REQUEST_CODE_EDIT = 5;
 
-    private DataBaseHelper mDataBaseHelprer;
+    private DataBaseHelper mDataBaseHelper;
     private SQLiteDatabase mDatabase;
+
     private Cursor mStudentsCursor;
     private SimpleCursorAdapter mAdapter;
 
-    private ArrayList<Student> mStudents; //Temp students list
-    private int mPosition;
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_hw);
 
-        mDataBaseHelprer = new DataBaseHelper(this);
-        mDatabase = mDataBaseHelprer.getWritableDatabase();
+        mDataBaseHelper = new DataBaseHelper(this);
+        mDatabase = mDataBaseHelper.getWritableDatabase();
 
-        mStudentsCursor = mDatabase.query(Student.TABLE_NAME, null, null, null, null, null, null);
+        mListView = (ListView) findViewById(R.id.listViewHW7);
+        registerForContextMenu(mListView);
 
-        mAdapter = new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_2,
-                mStudentsCursor,
-                new String[]{Student.COLUMN_FIRST_NAME, Student.COLUMN_LAST_NAME},
-                new int[]{android.R.id.text1, android.R.id.text2}
-        );
-
-        ListView listView = (ListView) findViewById(R.id.listViewHW7);
-        if (listView != null) {
-            listView.setAdapter(mAdapter);
-        }
-
+        initSudentsListView();
     }
 
     @Override
@@ -65,14 +54,10 @@ public class MainActivityHW extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.new_student) {
             Intent intentCreate = new Intent(MainActivityHW.this, ActivityEditStudent.class);
+            Student student = new Student("", "", 0, R.drawable.student0);
 
-            mStudents = new ArrayList<>();
-            mStudents.add(new Student("", "", 0, R.drawable.student0));
-
-            mPosition = mStudents.size() - 1;
-
-            intentCreate.putExtra(EXTRA_STUDENT, mStudents.get(mPosition));
-            startActivityForResult(intentCreate, REQUEST_CODE_EDIT);
+            intentCreate.putExtra(EXTRA_STUDENT, student);
+            startActivityForResult(intentCreate, REQUEST_CODE_NEW);
 
         } else if (item.getItemId() == R.id.new_group) {
             //TODO new group creation in DB
@@ -87,8 +72,23 @@ public class MainActivityHW extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int listItemPosition = menuInfo.position;
+
         if (item.getItemId() == R.id.edit_student) {
             //TODO edit student in DB
+            Intent intentEdit = new Intent(MainActivityHW.this, ActivityEditStudent.class);
+            Cursor studentCursor = (Cursor) mListView.getItemAtPosition(listItemPosition);// .getItem(listItemPosition);
+            Student student = new Student(
+                    studentCursor.getString(studentCursor.getColumnIndex(Student.COLUMN_FIRST_NAME)),
+                    studentCursor.getString(studentCursor.getColumnIndex(Student.COLUMN_LAST_NAME)),
+                    studentCursor.getLong(studentCursor.getColumnIndex(Student.COLUMN_AGE)),
+                    studentCursor.getLong(studentCursor.getColumnIndex(Student.COLUMN_PHOTO_ID))
+            );
+
+            intentEdit.putExtra(EXTRA_STUDENT, student);
+            startActivityForResult(intentEdit, REQUEST_CODE_EDIT);
+
         } else if (item.getItemId() == R.id.delete_student) {
             //TODO delete student from DB
         }
@@ -97,16 +97,51 @@ public class MainActivityHW extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_EDIT && resultCode == RESULT_OK) {
-            Student student = data.getParcelableExtra(EXTRA_STUDENT);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_NEW) {
+                Student student = data.getParcelableExtra(EXTRA_STUDENT);
 
-            mDataBaseHelprer.insertStudent(student);
+                mDataBaseHelper.insertStudent(student);
 
-            insertChecker();
+                insertChecker();
 
-            mAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
 
-            //TODO new cursor init
+                initSudentsListView();
+            } else if (requestCode == REQUEST_CODE_EDIT) {
+                Student student = data.getParcelableExtra(EXTRA_STUDENT);
+
+                mDataBaseHelper.editStudent(student);
+
+                insertChecker();
+
+                mAdapter.notifyDataSetChanged();
+
+                initSudentsListView();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+    }
+
+    private void initSudentsListView() {
+        mStudentsCursor = mDatabase.query(Student.TABLE_NAME, null, null, null, null, null, null);
+
+        mAdapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_2,
+                mStudentsCursor,
+                new String[]{Student.COLUMN_FIRST_NAME, Student.COLUMN_LAST_NAME},
+                new int[]{android.R.id.text1, android.R.id.text2}
+        );
+
+        if (mListView != null) {
+            mListView.setAdapter(mAdapter);
         }
     }
 
@@ -121,7 +156,8 @@ public class MainActivityHW extends AppCompatActivity {
                     Log.d("Students.db: ",
                             cursor.getString(cursor.getColumnIndex(Student.COLUMN_FIRST_NAME))
                                     + " " + cursor.getString(cursor.getColumnIndex(Student.COLUMN_LAST_NAME))
-                                    + " " + cursor.getString(cursor.getColumnIndex(Student.COLUMN_FIRST_NAME))
+                                    + " " + cursor.getString(cursor.getColumnIndex(Student.COLUMN_AGE))
+                                    + " " + cursor.getString(cursor.getColumnIndex(Student.COLUMN_PHOTO_ID))
 
                     );
 

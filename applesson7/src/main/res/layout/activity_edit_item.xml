@@ -10,44 +10,44 @@
     tools:context="com.android.isem.applesson5.ActivityEdit">
 
     <ImageView
-        android:id="@+id/imageViewEdit"
+        android:id="@+id/imageViewEdit7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:id="@+id/editTextFirstName"
+        android:id="@+id/editTextFirstName7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageViewEdit"
+        android:layout_below="@id/imageViewEdit7"
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editTextLastName"
+        android:id="@+id/editTextLastName7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextFirstName"
+        android:layout_below="@id/editTextFirstName7"
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editTextAge"
+        android:id="@+id/editTextAge7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextLastName"
+        android:layout_below="@id/editTextLastName7"
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="number" />
 
     <Button
-        android:id="@+id/buttonSave"
+        android:id="@+id/buttonSave7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextAge"
+        android:layout_below="@id/editTextAge7"
         android:layout_centerHorizontal="true"
         android:onClick="onClickSave"
         android:text="Save" />

@@ -3,6 +3,7 @@ package com.android.isem.applesson7;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -90,13 +91,30 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             contentValues.put(Student.COLUMN_PHOTO_ID, student.getPhotoID());
 
             updCount = database.update(Student.TABLE_NAME,
-                    contentValues, Student.COLUMN_ID + " = ?",
-                    new String[] { String.valueOf(student.getId()) });
-
-        } catch (Exception e) {
+                    contentValues,
+                    Student.COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(student.getId())}
+            );
+        } catch (SQLiteException  e) {
             Log.e(LOG_TAG, e.getMessage(), e);
         }
 
         return updCount;
+    }
+
+    public int deleteStudent(long studentId) {
+        int delCount = 0;
+        SQLiteDatabase database = getWritableDatabase();
+
+        try {
+            delCount = database.delete(Student.TABLE_NAME,
+                    Student.COLUMN_ID + " = ?",
+                    new String[] {String.valueOf(studentId)}
+            );
+        } catch (SQLiteException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+        }
+
+        return delCount;
     }
 }

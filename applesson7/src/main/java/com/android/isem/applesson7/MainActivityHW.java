@@ -18,7 +18,7 @@ public class MainActivityHW extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivityHW.class.getSimpleName();
 
-    public static final String EXTRA_STUDENT = "com.android.isem.applesson7.STUDENT";
+    public static final String EXTRA_STUDENT = "com.android.isem.applesson7.EXTRA_STUDENT";
     public static final int REQUEST_CODE_NEW = 4;
     public static final int REQUEST_CODE_EDIT = 5;
 
@@ -74,11 +74,11 @@ public class MainActivityHW extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int listItemPosition = menuInfo.position;
+        Cursor studentCursor = (Cursor) mListView.getItemAtPosition(listItemPosition);
 
         if (item.getItemId() == R.id.edit_student) {
             //TODO edit student in DB
             Intent intentEdit = new Intent(MainActivityHW.this, ActivityEditStudent.class);
-            Cursor studentCursor = (Cursor) mListView.getItemAtPosition(listItemPosition);// .getItem(listItemPosition);
             Student student = new Student(
                     studentCursor.getString(studentCursor.getColumnIndex(Student.COLUMN_FIRST_NAME)),
                     studentCursor.getString(studentCursor.getColumnIndex(Student.COLUMN_LAST_NAME)),
@@ -90,7 +90,16 @@ public class MainActivityHW extends AppCompatActivity {
             startActivityForResult(intentEdit, REQUEST_CODE_EDIT);
 
         } else if (item.getItemId() == R.id.delete_student) {
-            //TODO delete student from DB
+            int result = mDataBaseHelper.deleteStudent(
+                    studentCursor.getLong(studentCursor.getColumnIndex(Student.COLUMN_ID))
+            );
+
+            dbChangeChecker(); //Utility
+
+            if(result != 0) {
+                mAdapter.notifyDataSetChanged();
+                initSudentsListView();
+            }
         }
         return super.onContextItemSelected(item);
     }
@@ -103,20 +112,17 @@ public class MainActivityHW extends AppCompatActivity {
 
                 mDataBaseHelper.insertStudent(student);
 
-                insertChecker();
-
+                dbChangeChecker(); //Utility
                 mAdapter.notifyDataSetChanged();
-
                 initSudentsListView();
+
             } else if (requestCode == REQUEST_CODE_EDIT) {
                 Student student = data.getParcelableExtra(EXTRA_STUDENT);
 
                 mDataBaseHelper.editStudent(student);
 
-                insertChecker();
-
+                dbChangeChecker();//Utility
                 mAdapter.notifyDataSetChanged();
-
                 initSudentsListView();
             }
         }
@@ -126,6 +132,9 @@ public class MainActivityHW extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+        if (mDataBaseHelper != null) {
+            mDataBaseHelper.close();
+        }
 
     }
 
@@ -145,7 +154,7 @@ public class MainActivityHW extends AppCompatActivity {
         }
     }
 
-    private void insertChecker() {
+    private void dbChangeChecker() {
         Cursor cursor = null;
         try {
             cursor = mDatabase.query(Student.TABLE_NAME, null, null, null, null, null, null);
